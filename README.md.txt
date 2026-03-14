@@ -75,6 +75,7 @@ Block attacker IP addresses using firewall rules.
 Generate a visual network graph showing connected devices.
 
 ---
+### google map visualization...
 
 ### 🖥️ SOC Security Dashboard
 
