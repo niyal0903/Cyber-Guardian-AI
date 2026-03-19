@@ -1,0 +1,10 @@
+speechrecognition
+pypiwin32
+requests
+scapy
+psutil
+networkx
+matplotlib
+twilio
+pywhatkit
+python-nmap
