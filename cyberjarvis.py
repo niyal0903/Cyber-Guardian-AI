@@ -361,6 +361,7 @@ import webbrowser
 import concurrent.futures
 from ddos_trecker import check_ddos, show_all_attackers
 from Dashboard import start_dashboard
+from password_checker import check_password
 
 # -------- MAC Vendor Lookup --------
 def get_vendor(mac):
@@ -716,6 +717,17 @@ def jarvis_loop():
                 speak("Showing all tracked attackers sir")
                 show_all_attackers()
                 speak("Attacker report done sir")
+
+            elif "check password" in command:
+                speak("Tell me the password sir")
+                try:
+                    with mic as source:
+                        audio_pwd = recognizer.listen(source, timeout=8, phrase_time_limit=6)
+                    pwd = recognizer.recognize_google(audio_pwd).strip()
+                    print("Password received:", pwd)
+                    check_password(pwd, speaker, dash)
+                except:
+                    speak("Sorry sir, could not hear the password")
 
             elif any(word in command for word in ["exit", "stop", "quit", "bye"]):
                 speak("Goodbye sir")
