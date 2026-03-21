@@ -362,6 +362,15 @@ import concurrent.futures
 from ddos_trecker import check_ddos, show_all_attackers
 from Dashboard import start_dashboard
 from password_checker import check_password
+from wifi_deauth_detector import start_deauth_monitor, stop_deauth_monitor
+from mac_spoof_detector import check_mac_spoofing
+
+# 🔥 NEW IMPORTS
+import folium
+import speedtest
+
+# -------- GLOBALS -------- 
+previous_devices = set()
 
 # -------- MAC Vendor Lookup --------
 def get_vendor(mac):
@@ -425,6 +434,38 @@ def scan_wifi_devices():
         devices.append((ip, mac, name, vendor))
 
     return devices
+
+# -------- NEW: LIVE ATTACK MAP --------
+def show_live_attack_map():
+    from ddos_trecker import tracked_ips
+
+    if not tracked_ips:
+        print("No attackers to show")
+        return
+
+    m = folium.Map(location=[20.5937, 78.9629], zoom_start=4)
+
+    for ip, loc in tracked_ips.items():
+        if loc.get("lat") and loc.get("lon"):
+            folium.Marker(
+                location=[loc["lat"], loc["lon"]],
+                popup=f"{ip} - {loc['city']}, {loc['country']}",
+                icon=folium.Icon(color="red")
+            ).add_to(m)
+
+    m.save("attack_map.html")
+    webbrowser.open("attack_map.html")
+
+# -------- NEW: INTERNET SPEED --------
+def check_internet_speed():
+    st = speedtest.Speedtest()
+    download = st.download() / 1_000_000
+    upload   = st.upload() / 1_000_000
+
+    print(f"Download: {download:.2f} Mbps")
+    print(f"Upload: {upload:.2f} Mbps")
+
+    return download, upload
 
 # -------- Port Scanner — FAST --------
 def _check_one_port(args):
@@ -628,16 +669,19 @@ def soc_dashboard(devices, threat):
     print("Connected Devices:", len(devices))
     print("Threat Level:", threat)
 
-# -------- speaker global — ddos_tracker ke liye --------
+# -------- speaker global --------
 speaker = None
 
 # -------- Voice Loop --------
 def jarvis_loop():
 
-    global speaker
+    global speaker, previous_devices
     pythoncom.CoInitialize()
     speaker = win32com.client.Dispatch("SAPI.SpVoice")
     cyber   = CyberAI()
+
+    # RAM mein last scan store hoga — MAC spoof check ke liye
+    last_devices = []
 
     def speak(text):
         print("Jarvis:", text)
@@ -666,68 +710,63 @@ def jarvis_loop():
 
             if dash: dash.set_command(command)
 
-            # -------- JARVIS WAKE WORD --------
             if "jarvis" in command and len(command.split()) == 1:
                 speak("Yes sir")
-
-            elif "system status" in command:
-                speak("Checking system status sir")
-                cyber.cpu_usage()
-                cyber.ram_usage()
-                speak("System status done sir")
 
             elif "scan network" in command:
                 speak("Scanning network sir")
                 devices = scan_wifi_devices()
 
-                if dash:
-                    dev_list = []
-                    for ip, mac, name, vendor in devices:
-                        brand  = detect_brand(vendor)
-                        status = "RISK" if brand == "Unknown Device" else "OK"
-                        dev_list.append({"name": brand, "ip": ip, "status": status})
-                    dash.set_devices(dev_list)
+                # RAM mein save karo — MAC spoof ke liye baad mein use hoga
+                last_devices = devices
 
-                risk = network_map(devices)
-                intrusion_detection(devices)
+                # 🔥 NEW DEVICE DETECTION
+                current_devices = set([mac for ip, mac, name, vendor in devices])
+                new_devices = current_devices - previous_devices
 
-                speak("Scanning ports sir please wait")
                 for ip, mac, name, vendor in devices:
-                    port_scan(ip)
+                    if mac in new_devices:
+                        speak(f"New device detected {name}")
 
-                threat = ai_threat_prediction(devices)
+                previous_devices = current_devices
 
-                if dash:
-                    dash.set_threat(threat.upper())
-                    if threat == "High":
-                        dash.set_mode("alert")
+                network_map(devices)
 
-                soc_dashboard(devices, threat)
+            elif "attack map" in command:
+                speak("Opening live attack map sir")
+                show_live_attack_map()
 
-                speak(f"Network risk level is {risk} sir")
-                network_graph(devices)
-                speak("Network graph is ready sir")
-
-            elif "packet sniffer" in command:
-                speak("Starting packet sniffer sir")
-                start_sniffer()
-                speak("Sniffer stopped sir")
-
-            elif "show attackers" in command:
-                speak("Showing all tracked attackers sir")
-                show_all_attackers()
-                speak("Attacker report done sir")
+            elif "internet speed" in command:
+                speak("Checking internet speed sir")
+                d, u = check_internet_speed()
+                speak(f"Download speed is {int(d)} Mbps and upload is {int(u)} Mbps")
 
             elif "check password" in command:
                 speak("Tell me the password sir")
                 try:
                     with mic as source:
-                        audio_pwd = recognizer.listen(source, timeout=8, phrase_time_limit=6)
-                    pwd = recognizer.recognize_google(audio_pwd).strip()
-                    print("Password received:", pwd)
+                        audio_pwd = recognizer.listen(source)
+                    pwd = recognizer.recognize_google(audio_pwd)
                     check_password(pwd, speaker, dash)
                 except:
                     speak("Sorry sir, could not hear the password")
+
+            # -------- DEAUTH MONITOR --------
+            elif "start deauth monitor" in command:
+                speak("Starting WiFi deauth attack monitor sir")
+                start_deauth_monitor(speaker, dash)
+
+            elif "stop deauth monitor" in command:
+                speak("Stopping WiFi deauth monitor sir")
+                stop_deauth_monitor(speaker, dash)
+
+            # -------- MAC SPOOF CHECK --------
+            elif "check mac spoofing" in command:
+                if last_devices:
+                    speak("Checking MAC spoofing on all devices sir")
+                    check_mac_spoofing(last_devices, speaker, dash)
+                else:
+                    speak("Sir please scan network first then check MAC spoofing")
 
             elif any(word in command for word in ["exit", "stop", "quit", "bye"]):
                 speak("Goodbye sir")
@@ -741,9 +780,7 @@ def jarvis_loop():
 
 dash = start_dashboard()
 
-voice_thread        = threading.Thread(target=jarvis_loop)
-voice_thread.daemon = True
-voice_thread.start()
+threading.Thread(target=jarvis_loop, daemon=True).start()
 
 while True:
     pass
