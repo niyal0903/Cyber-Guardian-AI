@@ -364,13 +364,100 @@ from Dashboard import start_dashboard
 from password_checker import check_password
 from wifi_deauth_detector import start_deauth_monitor, stop_deauth_monitor
 from mac_spoof_detector import check_mac_spoofing
+import subprocess
 
 # 🔥 NEW IMPORTS
 import folium
 import speedtest
 
-# -------- GLOBALS -------- 
+# -------- GLOBALS --------
 previous_devices = set()
+
+
+# -------- Smart Device Name — 4 methods --------
+def get_device_name(ip, mac, vendor):
+    """
+    4 methods se real device name dhundho — RAM only
+    """
+
+    # Method 1 — Reverse DNS hostname
+    try:
+        hostname = socket.gethostbyaddr(ip)[0]
+        if hostname and hostname != ip:
+            return hostname
+    except:
+        pass
+
+    # Method 2 — NetBIOS (Windows devices)
+    try:
+        result = subprocess.run(
+            ["nbtstat", "-A", ip],
+            capture_output=True, text=True, timeout=3
+        )
+        for line in result.stdout.splitlines():
+            if "<00>" in line and "UNIQUE" in line:
+                nb_name = line.strip().split()[0]
+                if nb_name:
+                    return nb_name
+    except:
+        pass
+
+    # Method 3 — Vendor se smart name
+    v = vendor.lower().strip()
+    last = ip.split(".")[-1]
+
+    brand_map = {
+        "samsung"   : f"Samsung-{last}",
+        "apple"     : f"Apple-{last}",
+        "iphone"    : f"iPhone-{last}",
+        "ipad"      : f"iPad-{last}",
+        "macbook"   : f"MacBook-{last}",
+        "xiaomi"    : f"Xiaomi-{last}",
+        "redmi"     : f"Redmi-{last}",
+        "oppo"      : f"Oppo-{last}",
+        "vivo"      : f"Vivo-{last}",
+        "realme"    : f"Realme-{last}",
+        "oneplus"   : f"OnePlus-{last}",
+        "intel"     : f"Laptop-{last}",
+        "dell"      : f"Dell-PC-{last}",
+        "hp"        : f"HP-PC-{last}",
+        "hewlett"   : f"HP-PC-{last}",
+        "lenovo"    : f"Lenovo-{last}",
+        "asus"      : f"Asus-{last}",
+        "acer"      : f"Acer-{last}",
+        "huawei"    : f"Huawei-{last}",
+        "amazon"    : f"Alexa-{last}",
+        "google"    : f"Google-{last}",
+        "tp-link"   : f"TPLink-Router-{last}",
+        "tplink"    : f"TPLink-Router-{last}",
+        "d-link"    : f"DLink-Router-{last}",
+        "dlink"     : f"DLink-Router-{last}",
+        "netgear"   : f"Netgear-Router-{last}",
+        "zyxel"     : f"ZyXEL-Router-{last}",
+        "cisco"     : f"Cisco-{last}",
+        "jio"       : f"JioFi-{last}",
+        "reliance"  : f"Jio-{last}",
+        "bsnl"      : f"BSNL-{last}",
+        "nokia"     : f"Nokia-{last}",
+        "motorola"  : f"Moto-{last}",
+        "sony"      : f"Sony-{last}",
+        "lg"        : f"LG-{last}",
+        "microsoft" : f"MS-Surface-{last}",
+        "raspberry" : f"RaspberryPi-{last}",
+    }
+
+    for key, name in brand_map.items():
+        if key in v:
+            return name
+
+    # Method 4 — Vendor hai but specific nahi
+    if v and "unknown" not in v:
+        short = vendor.strip()[:10]
+        return f"{short}-{last}"
+
+    # Kuch nahi mila
+    return f"Device-{last}"
+
 
 # -------- MAC Vendor Lookup --------
 def get_vendor(mac):
@@ -382,6 +469,7 @@ def get_vendor(mac):
         return "Unknown Vendor"
     except:
         return "Unknown Vendor"
+
 
 # -------- Device Brand Detection --------
 def detect_brand(vendor):
@@ -407,13 +495,15 @@ def detect_brand(vendor):
     else:
         return "Unknown Device"
 
-# -------- WiFi Scan --------
+
+# -------- UPGRADED WiFi Scan --------
 def scan_wifi_devices():
     hostname = socket.gethostname()
     local_ip = socket.gethostbyname(hostname)
     parts    = local_ip.split(".")
     subnet   = parts[0] + "." + parts[1] + "." + parts[2] + ".0/24"
-    print("Scanning subnet:", subnet)
+    print(f"\nScanning subnet: {subnet}")
+    print("─" * 50)
 
     arp    = ARP(pdst=subnet)
     ether  = Ether(dst="ff:ff:ff:ff:ff:ff")
@@ -425,15 +515,26 @@ def scan_wifi_devices():
     for sent, received in result:
         ip  = received.psrc
         mac = received.hwsrc
-        try:
-            name = socket.gethostbyaddr(ip)[0]
-        except:
-            name = "Unknown"
+
+        print(f"  Found   : {ip} ({mac})")
+        print(f"  Recognizing...")
 
         vendor = get_vendor(mac)
+        name   = get_device_name(ip, mac, vendor)
+        brand  = detect_brand(vendor)
+
+        print(f"  Device  : {name}")
+        print(f"  Brand   : {brand}")
+        print(f"  Vendor  : {vendor.strip()}")
+        print("  " + "─" * 46)
+
         devices.append((ip, mac, name, vendor))
 
+    print(f"\n  Total devices found: {len(devices)}")
+    print("─" * 50)
+
     return devices
+
 
 # -------- NEW: LIVE ATTACK MAP --------
 def show_live_attack_map():
@@ -456,16 +557,27 @@ def show_live_attack_map():
     m.save("attack_map.html")
     webbrowser.open("attack_map.html")
 
+
 # -------- NEW: INTERNET SPEED --------
 def check_internet_speed():
-    st = speedtest.Speedtest()
-    download = st.download() / 1_000_000
-    upload   = st.upload() / 1_000_000
+    try:
+        print("Checking internet speed... please wait")
 
-    print(f"Download: {download:.2f} Mbps")
-    print(f"Upload: {upload:.2f} Mbps")
+        st = speedtest.Speedtest()
 
-    return download, upload
+        st.get_best_server()   # 🔥 IMPORTANT FIX
+
+        download = st.download() / 1_000_000
+        upload   = st.upload() / 1_000_000
+
+        print(f"Download: {download:.2f} Mbps")
+        print(f"Upload: {upload:.2f} Mbps")
+
+        return download, upload
+
+    except Exception as e:
+        print("Speed test failed:", e)
+        return 0, 0
 
 # -------- Port Scanner — FAST --------
 def _check_one_port(args):
@@ -494,8 +606,10 @@ def port_scan(ip):
 
     return open_ports
 
+
 # -------- Suspicious Traffic Detection --------
 traffic_counter = {}
+
 
 # -------- Hacker Location Finder --------
 def get_hacker_location(ip):
@@ -520,6 +634,7 @@ def get_hacker_location(ip):
         print("Location not found")
         return None, None
 
+
 # -------- Attack Map --------
 def show_attack_map(lat, lon):
     if lat and lon:
@@ -527,8 +642,10 @@ def show_attack_map(lat, lon):
         print("Opening attack location on Google Map...")
         webbrowser.open(url)
 
+
 # -------- ARP Spoofing Detection --------
 arp_table = {}
+
 
 # -------- Auto IP Blocker --------
 def block_ip(ip):
@@ -540,8 +657,10 @@ def block_ip(ip):
     except:
         print("Failed to block IP")
 
+
 # -------- DDoS Detection --------
 ddos_counter = {}
+
 
 # -------- Packet Sniffer --------
 def packet_callback(packet):
@@ -579,9 +698,11 @@ def packet_callback(packet):
 
         check_ddos(src, speaker)
 
+
 def start_sniffer():
     print("\nStarting Packet Sniffer...")
     sniff(prn=packet_callback, count=10)
+
 
 # -------- Intrusion Detection --------
 known_devices = []
@@ -594,6 +715,7 @@ def intrusion_detection(devices):
             print("IP:", ip)
             print("MAC:", mac)
             print("Vendor:", vendor)
+
 
 # -------- AI Threat Prediction --------
 def ai_threat_prediction(devices):
@@ -619,6 +741,7 @@ def ai_threat_prediction(devices):
     print("\nAI Threat Level:", threat)
     return threat
 
+
 # -------- Network Map --------
 def network_map(devices):
     print("\nNetwork Map")
@@ -626,7 +749,7 @@ def network_map(devices):
 
     for ip, mac, name, vendor in devices:
         brand = detect_brand(vendor)
-        print("Device:", brand, "| IP:", ip)
+        print("Device:", name, "| Brand:", brand, "| IP:", ip)
 
         if brand == "Unknown Device":
             unknown += 1
@@ -640,6 +763,7 @@ def network_map(devices):
 
     print("\nNetwork Risk Level:", risk)
     return risk
+
 
 # -------- Network Graph --------
 def network_graph(devices):
@@ -657,6 +781,7 @@ def network_graph(devices):
     plt.title("Network Device Map")
     plt.show()
 
+
 # -------- SOC Dashboard --------
 def soc_dashboard(devices, threat):
     cpu = psutil.cpu_percent()
@@ -669,8 +794,10 @@ def soc_dashboard(devices, threat):
     print("Connected Devices:", len(devices))
     print("Threat Level:", threat)
 
+
 # -------- speaker global --------
 speaker = None
+
 
 # -------- Voice Loop --------
 def jarvis_loop():
@@ -703,7 +830,10 @@ def jarvis_loop():
 
             with mic as source:
                 print("Listening...")
+                if dash: dash.set_mode("listening")
                 audio = recognizer.listen(source, timeout=5, phrase_time_limit=5)
+            print("Recognizing...")
+            if dash: dash.set_mode("processing")
 
             command = recognizer.recognize_google(audio, language="en-IN").lower().strip()
             print("You said:", command)
@@ -745,8 +875,13 @@ def jarvis_loop():
                 speak("Tell me the password sir")
                 try:
                     with mic as source:
+                        print("Listening for password...")
                         audio_pwd = recognizer.listen(source)
+                    print("Listening for password...")
                     pwd = recognizer.recognize_google(audio_pwd)
+                    print(f"Password entered: {pwd}") 
+                    if dash:
+                        dash.set_command(f"Password: {pwd}")
                     check_password(pwd, speaker, dash)
                 except:
                     speak("Sorry sir, could not hear the password")
