@@ -874,19 +874,7 @@ def jarvis_loop():
                 speak(f"Download speed is {int(d)} Mbps and upload is {int(u)} Mbps")
 
             elif "check password" in command:
-                speak("Tell me the password sir")
-                try:
-                    with mic as source:
-                        print("Listening for password...")
-                        audio_pwd = recognizer.listen(source)
-                    print("Listening for password...")
-                    pwd = recognizer.recognize_google(audio_pwd)
-                    print(f"Password entered: {pwd}") 
-                    if dash:
-                        dash.set_command(f"Password: {pwd}")
-                    check_password(pwd, speaker, dash)
-                except:
-                    speak("Sorry sir, could not hear the password")
+                    check_password(None, speaker, dash)
 
             # -------- DEAUTH MONITOR --------
             elif "start deauth monitor" in command:

@@ -1,4 +1,3 @@
-
 import hashlib
 import requests
 
@@ -16,38 +15,22 @@ class C:
 
 # ── HIBP API — k-anonymity model ─────────────────────────────
 def check_dark_web(password):
-    """
-    Password dark web pe leaked hai ya nahi check karo.
-
-    k-anonymity model:
-    - Password ka SHA1 hash banao
-    - Sirf pehle 5 characters API ko bhejo
-    - Tera actual password kabhi server pe nahi jaata!
-
-    Returns:
-        int — kitni baar leaked (0 = safe)
-    """
     try:
-        # Step 1 — SHA1 hash banao
-        sha1 = hashlib.sha1(password.encode('utf-8')).hexdigest().upper()
-
-        # Step 2 — sirf pehle 5 chars bhejo (k-anonymity)
+        sha1   = hashlib.sha1(password.encode('utf-8')).hexdigest().upper()
         prefix = sha1[:5]
         suffix = sha1[5:]
 
-        # Step 3 — API call
         url      = f"https://api.pwnedpasswords.com/range/{prefix}"
         response = requests.get(url, timeout=5)
         response.raise_for_status()
 
-        # Step 4 — response mein apna suffix dhundo
         hashes = response.text.splitlines()
         for line in hashes:
             h, count = line.split(':')
             if h == suffix:
                 return int(count)
 
-        return 0  # nahi mila — safe hai
+        return 0
 
     except requests.ConnectionError:
         print(f"{C.RED}Error: Internet connection nahi hai!{C.RESET}")
@@ -62,16 +45,9 @@ def check_dark_web(password):
 
 # ── Password Strength Check ───────────────────────────────────
 def check_strength(password):
-    """
-    Password kitna strong hai check karo.
-
-    Returns:
-        dict — {score, level, suggestions}
-    """
     score       = 0
     suggestions = []
 
-    # Length check
     if len(password) >= 12:
         score += 2
     elif len(password) >= 8:
@@ -79,32 +55,27 @@ def check_strength(password):
     else:
         suggestions.append("At least 8 characters use karo")
 
-    # Uppercase check
     if any(c.isupper() for c in password):
         score += 1
     else:
         suggestions.append("Ek capital letter add karo (A-Z)")
 
-    # Lowercase check
     if any(c.islower() for c in password):
         score += 1
     else:
         suggestions.append("Ek small letter add karo (a-z)")
 
-    # Number check
     if any(c.isdigit() for c in password):
         score += 1
     else:
         suggestions.append("Ek number add karo (0-9)")
 
-    # Symbol check
     symbols = "!@#$%^&*()_+-=[]{}|;':\",./<>?"
     if any(c in symbols for c in password):
         score += 2
     else:
         suggestions.append("Ek symbol add karo (!@#$%)")
 
-    # Level decide karo
     if score >= 6:
         level = "STRONG"
         color = C.GREEN
@@ -124,18 +95,17 @@ def check_strength(password):
 
 
 # ── Main Function — cyberjarvis.py yeh call karega ────────────
-def check_password(password, speaker=None, dash=None):
+def check_password(password=None, speaker=None, dash=None):
     """
     Password check karo — dark web + strength.
-    cyberjarvis.py se yeh call hoga.
+
+    Agar password=None ho toh terminal mein type karo
+    cyberjarvis.py voice se bhi call kar sakta hai
 
     Args:
-        password : string — check karna hai
-        speaker  : win32com speaker (optional — jarvis bolega)
-        dash     : dashboard object (optional — alert dikhega)
-
-    Returns:
-        dict — {leaked, count, strength}
+        password : string (optional) — None ho toh terminal input
+        speaker  : win32com speaker (optional)
+        dash     : dashboard object (optional)
     """
 
     def speak(text):
@@ -144,6 +114,20 @@ def check_password(password, speaker=None, dash=None):
             if dash: dash.set_mode("speaking")
             speaker.Speak(text)
             if dash: dash.set_mode("listening")
+
+    # ── Terminal input — agar password nahi diya ─────────────
+    if password is None or password.strip() == "":
+        speak("Tell me the password sir")
+        print(f"\n{C.YELLOW}  ► Type your password and press Enter: {C.RESET}", end="")
+        try:
+            password = input().strip()
+        except:
+            speak("Sorry sir, input failed")
+            return
+
+    if not password:
+        speak("Sorry sir, no password entered")
+        return
 
     print(f"\n{C.BOLD}[ PASSWORD CHECKER ]{C.RESET}")
     print(f"  Checking password... (RAM only — not stored)\n")
@@ -161,7 +145,7 @@ def check_password(password, speaker=None, dash=None):
 
     # ── Print Results ─────────────────────────────────────────
     print(f"  {'─'*38}")
-    print(f"  {'DARK WEB RESULT':}")
+    print(f"  DARK WEB RESULT")
 
     if count > 0:
         print(f"  {C.RED}{C.BOLD}DANGER! Password leaked!{C.RESET}")
@@ -173,7 +157,7 @@ def check_password(password, speaker=None, dash=None):
         print(f"  {C.GREEN}{C.BOLD}SAFE! Not found on dark web{C.RESET}")
         speak("Sir, this password is safe! Not found on dark web.")
 
-    print(f"\n  {'PASSWORD STRENGTH':}")
+    print(f"\n  PASSWORD STRENGTH")
     sc = strength
     print(f"  Strength : {sc['color']}{C.BOLD}{sc['level']}{C.RESET}")
     print(f"  Score    : {sc['score']}/7")
@@ -183,7 +167,7 @@ def check_password(password, speaker=None, dash=None):
         for s in sc['suggestions']:
             print(f"    → {s}")
         if sc['level'] != 'STRONG':
-            speak(f"Password strength is {sc['level']}. " + sc['suggestions'][0] if sc['suggestions'] else "")
+            speak(f"Password strength is {sc['level']}. " + (sc['suggestions'][0] if sc['suggestions'] else ""))
     else:
         print(f"  {C.GREEN}Excellent password!{C.RESET}")
         speak("Password strength is excellent sir!")
