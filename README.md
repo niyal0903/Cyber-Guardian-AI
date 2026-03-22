@@ -184,18 +184,6 @@ Visualize all DDoS attackers on interactive map:
 
 ---
 
-## 🆓 Free APIs — No Key Needed
-
-| API | Use |
-|---|---|
-| `macvendors.com` | Device vendor |
-| `ip-api.com` | Hacker location |
-| `pwnedpasswords.com` | Password breach |
-| `haveibeenpwned.com/v2` | Email breach |
-| `leakcheck.io` | Email fallback |
-
----
-
 ## 📂 Project Structure
 
 ```
