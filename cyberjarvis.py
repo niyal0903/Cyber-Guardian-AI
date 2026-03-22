@@ -365,6 +365,7 @@ from password_checker import check_password
 from wifi_deauth_detector import start_deauth_monitor, stop_deauth_monitor
 from mac_spoof_detector import check_mac_spoofing
 import subprocess
+from email_breach import check_email_breach
 
 # 🔥 NEW IMPORTS
 import folium
@@ -841,6 +842,7 @@ def jarvis_loop():
             if dash: dash.set_command(command)
 
             if "jarvis" in command and len(command.split()) == 1:
+                active = True
                 speak("Yes sir")
 
             elif "scan network" in command:
@@ -902,10 +904,13 @@ def jarvis_loop():
                     check_mac_spoofing(last_devices, speaker, dash)
                 else:
                     speak("Sir please scan network first then check MAC spoofing")
+            elif "check email" in command:
+                check_email_breach(speaker, dash)
 
             elif any(word in command for word in ["exit", "stop", "quit", "bye"]):
                 speak("Goodbye sir")
                 break
+
 
             else:
                 speak("Sorry sir command not recognized")
