@@ -873,6 +873,30 @@ def jarvis_loop():
                 d, u = check_internet_speed()
                 speak(f"Download speed is {int(d)} Mbps and upload is {int(u)} Mbps")
 
+                 # -------- MY IP --------
+            elif "my ip" in command:
+                speak("Checking your IP address sir")
+                try:
+                    local_ip = socket.gethostbyname(socket.gethostname())
+                    data    = requests.get("http://ip-api.com/json/", timeout=5).json()
+                    pub_ip  = data.get("query",   "Unknown")
+                    city    = data.get("city",    "Unknown")
+                    country = data.get("country", "Unknown")
+                    isp     = data.get("isp",     "Unknown")
+                    print("[ MY IP INFO ]")
+                    print("─" * 35)
+                    print(f"  Local IP  : {local_ip}")
+                    print(f"  Public IP : {pub_ip}")
+                    print(f"  City      : {city}")
+                    print(f"  Country   : {country}")
+                    print(f"  ISP       : {isp}")
+                    print("─" * 35)
+                    if dash: dash.set_command(f"IP: {pub_ip}")
+                    speak(f"Sir your local IP is {local_ip}. Public IP is {pub_ip}. Location is {city}, {country}. ISP is {isp}.")
+                except:
+                    speak("Sorry sir, could not fetch IP information")
+ 
+
             elif "check password" in command:
                     check_password(None, speaker, dash)
 
