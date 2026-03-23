@@ -371,6 +371,13 @@ from email_breach import check_email_breach
 import folium
 import speedtest
 
+from evil_twin_detector  import (start_evil_twin_monitor,
+                                  stop_evil_twin_monitor,
+                                  show_evil_twin_report)
+from ml_anomaly_detector import (start_anomaly_detector,
+                                  stop_anomaly_detector,
+                                  get_anomaly_report)
+
 # -------- GLOBALS --------
 previous_devices = set()
 
@@ -867,6 +874,27 @@ def jarvis_loop():
             elif "attack map" in command:
                 speak("Opening live attack map sir")
                 show_live_attack_map()
+            elif "start evil twin" in command:
+               speak("Starting Evil Twin attack monitor sir")
+               start_evil_twin_monitor(speaker=speaker, dash=dash)
+            elif "stop evil twin" in command:
+               speak("Stopping Evil Twin monitor sir")
+               stop_evil_twin_monitor(speaker=speaker, dash=dash)
+            elif "evil twin report" in command:
+               speak("Showing Evil Twin report sir")
+               show_evil_twin_report()
+
+           # ---- ML ANOMALY ----#
+            elif "start anomaly" in command or "start ml" in command:
+                speak("Starting ML anomaly detection. Learning phase takes 5 minutes sir.")
+                start_anomaly_detector(speaker=speaker, dash=dash)
+            elif "stop anomaly" in command:
+                speak("Stopping anomaly detection sir")
+                stop_anomaly_detector(speaker=speaker, dash=dash)
+            elif "anomaly report" in command:
+                speak("Showing anomaly report sir")
+                r = get_anomaly_report()
+                speak(f"Total {r['total_anomalies']} anomalies detected from {r['total_ips']} IPs sir")
 
             elif "internet speed" in command:
                 speak("Checking internet speed sir")
