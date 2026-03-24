@@ -377,6 +377,7 @@ from evil_twin_detector  import (start_evil_twin_monitor,
 from ml_anomaly_detector import (start_anomaly_detector,
                                   stop_anomaly_detector,
                                   get_anomaly_report)
+from face_auth import start_face_auth
 
 # -------- GLOBALS --------
 previous_devices = set()
@@ -960,7 +961,12 @@ def jarvis_loop():
 
 dash = start_dashboard()
 
-threading.Thread(target=jarvis_loop, daemon=True).start()
+# 🔐 Face Authentication First
+if start_face_auth():
+    # 👉 Agar face match ho gaya tab hi Jarvis start hoga
+    threading.Thread(target=jarvis_loop, daemon=True).start()
 
-while True:
-    pass
+    while True:
+        pass
+else:
+    print("Face not recognized. Access denied.")
