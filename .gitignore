@@ -1,0 +1,14 @@
+
+# Except these two files
+!cyberjarvis.py
+!face_auth.py
+
+# Ignore personal / temp files
+my_face.jpg
+temp.jpg
+__pycache__/
+venv/
+# Ignore sensitive logs
+intruder_logs
+intruder_logs.txt
+*.log
