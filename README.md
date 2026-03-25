@@ -1,240 +1,99 @@
-# 🛡️ Cyber Guardian AI
-### 🚀 An Advanced Voice-Controlled Cybersecurity Assistant powered by AI
+🛡️ Cyber Guardian AI: Mark II Edition
+🚀 An Advanced Voice-Controlled Cybersecurity Assistant with AI Deception & Biometric Defense
 
-Cyber Guardian AI is a powerful voice-driven cybersecurity system built with Python.
-It acts like a real-time AI security analyst that can monitor networks, detect cyber threats, analyze devices, and visualize attacks — all through voice commands.
+Cyber Guardian AI sirf ek scanner nahi, balki ek Full-Scale Security Analyst hai. Mark II update ke saath, isme DeepFace Biometric Recognition aur Intruder Deception System add kiya gaya hai jo unauthorized access milte hi system ko "Fake Update" mode mein lock kar deta hai.
 
----
+⚡ Mark II Highlights (NEW)
+🔐 AI Biometric Face Auth: DeepFace recognition ke bina Jarvis access nahi dega.
 
-## ⚡ Key Highlights
+🎭 Intruder Deception System: Unauthorized access par "Fake Windows Update" screen trigger hoti hai.
 
-- 🎤 Voice-controlled AI (Jarvis Style)
-- 🌐 Real-time Network Monitoring
-- 🛡️ Intrusion & Threat Detection
-- 📊 Live Iron Man Dashboard
-- 💥 DDoS Detection System
-- 🔐 Password Security Checker (Dark Web + Strength)
-- 📧 Email Dark Web Breach Checker ⭐ NEW
-- 📶 WiFi Deauth Attack Detector ⭐ NEW
-- 🎭 MAC Spoofing Detector ⭐ NEW
-- ⚡ Internet Speed Test ⭐ NEW
-- 🗺️ Live Attack Map ⭐ NEW
+🎹 Secret Key Sequence: System ko unlock karne ke liye "Alt+K" nahi, balki custom sequence "niyal" type karna padta hai.
 
----
+📸 Silent Intruder Capture: Intruder ki photo bina bataye Intruder_Logs mein save ho jati hai.
 
-## 🚀 Features
+🎙️ Acoustic Fingerprint: Mic check se pata chalta hai ki intruder wahan maujood hai ya nahi.
 
-### 🎤 Voice Controlled Cyber Assistant
-Control everything using your voice.
+🚀 All Features
+🎤 Voice Controlled Cyber Assistant
+"Jarvis style" commands se pura network control karein.
 
-**Commands:**
-```
-"scan network"         → WiFi scan + device names + risk
-"system status"        → CPU + RAM status
-"packet sniffer"       → Live packet capture
-"show attackers"       → DDoS attacker report
-"check password"       → Terminal mein type karo → dark web check
-"check email"          → Terminal mein type karo → breach check
-"internet speed"       → Download + Upload speed
-"attack map"           → Live attacker locations on map
-"start deauth monitor" → WiFi deauth attack watch karo
-"stop deauth monitor"  → Monitor band karo
-"check mac spoofing"   → MAC spoofing detect karo
-"exit / bye"           → Jarvis band karo
-```
+"scan network" → WiFi scan + device names + risk detection.
 
----
+"start deauth monitor" → WiFi deauth attacks par nazar rakhein.
 
-### 📡 WiFi Network Scanner
-Scan your network and detect all connected devices.
+"check mac spoofing" → Network par fake devices pakdein.
 
-✔ Shows:
-- IP Address
-- MAC Address
-- Device Name (Smart detection — Samsung, Apple, Xiaomi etc.)
-- Vendor / Brand
-- Recognizing... status while scanning
+"internet speed" → Real-time download aur upload speed.
 
----
+"attack map" → DDoS attackers ki location map par dekhein.
 
-### 🕵️ Intrusion Detection System
-Detect unknown or suspicious devices connected to your WiFi.
+🔐 Biometric Security (The Fortress)
+Face Recognition: System start hote hi owner ka face verify karta hai.
 
----
+2-Attempt Policy: 2 galat attempts ke baad Jarvis aggressive security mode mein chala jata hai.
 
-### ⚠️ ARP Spoofing Detection
-Detect MITM attacks by tracking MAC address mismatches.
+Fake Update Trap: Intruder ko lagta hai PC update ho raha hai, jabki background mein wo lock hota hai.
 
----
+Niyal Unlock: Keyboard par secret sequence "niyal" type karne par hi system wapas milta hai.
 
-### 🌐 Packet Sniffer
-Capture and analyze real-time network traffic using Scapy.
+📊 Live Iron Man Dashboard
+Animated UI: Jarvis ke bolne par jaw movement.
 
----
+Threat Alerts: DDoS ya Intruder milne par dashboard RED ho jata hai.
 
-### 💥 DDoS Attack Detection
-Detect high traffic attacks and identify attackers automatically.
+System Metrics: CPU/RAM live tracking aur Network Traffic waveform.
 
----
+🛠️ Advanced Technologies Used
+AI/ML: DeepFace (Face Recognition), TensorFlow/Keras.
 
-### 🌍 Hacker Location Finder
-Track attacker IP location and open it in Google Maps instantly.
+Cyber Security: Scapy (Sniffing), Socket (Networking), Folium (GIS Tracking).
 
----
+Audio/Voice: SAPI5 (Windows Native Voice), SoundDevice (Acoustic Analysis).
 
-### 🔒 Automatic IP Blocking
-Block malicious IPs using system firewall.
+GUI: Tkinter (Dashboard), Folium (Maps).
 
----
-
-### 📊 Network Visualization
-Generate a graphical network map of connected devices.
-
----
-
-### 🖥️ Iron Man Live Dashboard ⭐
-Real-time Iron Man face dashboard:
-- Animated Iron Man face — jaw moves when JARVIS speaks
-- Eyes turn RED on DDoS alert
-- CPU / RAM live bars
-- Network devices list
-- DDoS alerts panel
-- Live traffic waveform
-- Arc reactor animation
-
----
-
-### 🔐 Password Security Checker ⭐
-Advanced password analyzer — terminal mein type karo:
-- Check if password is leaked on dark web (k-anonymity model)
-- Password strength analysis (score 0-7)
-- Smart suggestions to improve security
-- 100% Free — No API Key
-
----
-
-### 📧 Email Dark Web Breach Checker ⭐ NEW
-Check if your email is in any data breach — terminal mein type karo:
-- Multiple free methods (HIBP v2, v3, LeakCheck)
-- Shows breach count — not names (privacy)
-- Immediate action suggestions
-- Strong password tips
-- 100% Free — No API Key
-
----
-
-### 📶 WiFi Deauth Attack Detector ⭐ NEW
-Detect WiFi deauthentication attacks:
-- Monitors deauth packets in background
-- Captures attacker MAC address
-- Voice + Dashboard alert
-- RAM only — no storage
-
----
-
-### 🎭 MAC Spoofing Detector ⭐ NEW
-Detect MAC address spoofing on network:
-- Vendor API se MAC verify karo
-- Mismatch mile toh alert
-- Voice + Dashboard alert
-- RAM only — no storage
-
----
-
-### ⚡ Internet Speed Test ⭐ NEW
-Check your internet speed:
-- Download speed
-- Upload speed
-- Ping
-
----
-
-### 🗺️ Live Attack Map ⭐ NEW
-Visualize all DDoS attackers on interactive map:
-- Folium map — opens in browser
-- Red markers for each attacker
-- City + Country + IP info
-
----
-
-## 🛠️ Technologies Used
-
-- Python
-- SpeechRecognition
-- Scapy
-- Socket
-- Requests
-- NetworkX
-- Matplotlib
-- Psutil
-- PyWin32
-- Threading
-- Tkinter (Dashboard)
-- Folium (Attack Map)
-- Speedtest-cli
-
----
-
-## 🔒 Privacy & Security
-
-- ✅ **RAM Only** — koi data permanently store nahi hota
-- ✅ **No API Keys** — sab free public APIs
-- ✅ **k-Anonymity** — password ka sirf hash prefix bhejta hai
-- ✅ **Defensive Only** — apna network protect karne ke liye
-
----
-
-## 📂 Project Structure
-
-```
+📂 Updated Project Structure
+Plaintext
 Cyber-Guardian-AI/
 │
-├── cyberjarvis.py          ← Main AI Assistant
-├── cyberai.py              ← Core Cyber Engine
-├── ddos_trecker.py         ← DDoS Detection
-├── password_checker.py     ← Password Security Module
-├── email_breach.py         ← Email Breach Checker ⭐ NEW
-├── wifi_deauth_detector.py ← WiFi Deauth Detector ⭐ NEW
-├── mac_spoof_detector.py   ← MAC Spoof Detector ⭐ NEW
+├── cyberjarvis.py          ← Main AI Assistant (Logic Hub)
+├── face_auth.py            ← DeepFace Biometric Module ⭐ NEW
+├── security_utils.py       ← Silent Capture & Acoustic Defense ⭐ NEW
+├── fake_update.py          ← Deception Update Screen (Unlock: niyal) ⭐ NEW
 ├── Dashboard.py            ← Iron Man GUI Dashboard
-├── requirements.txt        ← Dependencies
-└── README.md
-```
+├── ddos_trecker.py         ← DDoS Detection Logic
+├── password_checker.py     ← Dark Web Password Checker
+├── email_breach.py         ← Email Breach Checker
+└── requirements.txt        ← Dependencies
+⚙️ Installation & Setup
+Clone the Repo:
 
----
-
-## ⚙️ Installation
-
-```bash
+Bash
 git clone https://github.com/niyal0903/Cyber-Guardian-AI.git
 cd Cyber-Guardian-AI
+Install Dependencies:
+
+Bash
 pip install -r requirements.txt
-```
+pip install deepface tf-keras opencv-python sounddevice scipy
+Setup Your Face:
+Apni ek clear photo my_face.jpg naam se main folder mein rakhein.
 
----
+Run as Admin:
 
-## ▶️ Run
-
-```bash
-# Windows CMD as Administrator
+Bash
 python cyberjarvis.py
-```
+🕵️ How to Unlock the Deception Screen?
+Agar aapka face recognize nahi hota aur Blue Update Screen aa jati hai, toh ghabraiye mat.
+Bas keyboard par bina kisi box ke type karein: niyal
+System turant unlock ho jayega!
 
----
+👨‍💻 Author
+Niyal Patel 🚀
+"Security is not a product, but a process." — Bruce Schneier (Inspired by Tony Stark)
 
-## ⚠️ Legal Disclaimer
-
-Yeh tool **sirf apne khud ke network** ke liye banaya gaya hai.
-Kisi bhi unauthorized network pe use karna illegal hai.
-Developer kisi bhi misuse ke liye responsible nahi hai.
-
----
-
-## 👨‍💻 Author
-
-**Niyal Patel**
-🚀 Cybersecurity & AI Developer
-
----
+⚠️ Legal Disclaimer
+Yeh tool sirf educational aur personal network defense ke liye hai. Unauthorized hacking illegal hai.
 
 *"Sometimes you gotta run before you can walk." — Tony Stark*
