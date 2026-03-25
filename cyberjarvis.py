@@ -378,6 +378,9 @@ from ml_anomaly_detector import (start_anomaly_detector,
                                   stop_anomaly_detector,
                                   get_anomaly_report)
 from face_auth import start_face_auth
+import security_utils
+import fake_update
+import cv2
 
 # -------- GLOBALS --------
 previous_devices = set()
@@ -961,12 +964,34 @@ def jarvis_loop():
 
 dash = start_dashboard()
 
-# 🔐 Face Authentication First
+print("🔐 Starting Secure Face Authentication...")
+
+# Camera open karo frame capture karne ke liye agar face fail ho
+cap = cv2.VideoCapture(0)
+ret, frame = cap.read()
+cap.release()
+
+# 🔐 Modified Face Authentication Logic
 if start_face_auth():
-    # 👉 Agar face match ho gaya tab hi Jarvis start hoga
+    # 👉 CASE 1: Agar face match ho gaya
+    print("Welcome back, Sir. Access Granted.")
     threading.Thread(target=jarvis_loop, daemon=True).start()
 
     while True:
         pass
 else:
-    print("Face not recognized. Access denied.")
+    # 👉 CASE 2: Agar face match nahi hua (Intruder)
+    print("\n⚠ [ALERT] Unauthorized Access Detected!")
+    print("Initializing System Core... Please wait.") # Deception Message
+
+    # 1. Silent Photo Capture (Bina bataye photo save)
+    security_utils.capture_intruder(frame)
+
+    # 2. Acoustic Check (3 sec voice signature/silence check)
+    voice_status = security_utils.check_voice_presence(duration=3)
+
+    # 3. Trigger Fake Lockdown (Unlock password: niyal)
+    fake_update.start_fake_update()
+    
+    # Blue screen hatne ke baad bhi system access nahi dega
+    print("System Lockdown Active. Goodbye.")
