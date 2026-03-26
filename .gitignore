@@ -12,3 +12,13 @@ venv/
 intruder_logs
 intruder_logs.txt
 *.log
+
+# Personal data
+my_face.jpg
+master_voice.wav
+master_voice_feat.npy
+intruder_logs/
+intruder_logs.txt
+
+enroll_me.py
+extract_feature.py

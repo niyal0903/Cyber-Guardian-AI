@@ -381,6 +381,9 @@ from face_auth import start_face_auth
 import security_utils
 import fake_update
 import cv2
+from voice_auth import verify_voice
+import pythoncom
+import time
 
 # -------- GLOBALS --------
 previous_devices = set()
@@ -964,34 +967,62 @@ def jarvis_loop():
 
 dash = start_dashboard()
 
-print("🔐 Starting Secure Face Authentication...")
+print("🔐 Starting Secure Authentication...")
 
-# Camera open karo frame capture karne ke liye agar face fail ho
-cap = cv2.VideoCapture(0)
-ret, frame = cap.read()
-cap.release()
+pythoncom.CoInitialize()
+speak_temp = win32com.client.Dispatch("SAPI.SpVoice")
 
-# 🔐 Modified Face Authentication Logic
-if start_face_auth():
-    # 👉 CASE 1: Agar face match ho gaya
-    print("Welcome back, Sir. Access Granted.")
-    threading.Thread(target=jarvis_loop, daemon=True).start()
+# --- STEP 1: Face Authentication ---
+# Note: start_face_auth() ko fast rakhein (sirf 1-2 frames check karein)
+face_ok = start_face_auth()
 
-    while True:
-        pass
-else:
-    # 👉 CASE 2: Agar face match nahi hua (Intruder)
-    print("\n⚠ [ALERT] Unauthorized Access Detected!")
-    print("Initializing System Core... Please wait.") # Deception Message
-
-    # 1. Silent Photo Capture (Bina bataye photo save)
-    security_utils.capture_intruder(frame)
-
-    # 2. Acoustic Check (3 sec voice signature/silence check)
-    voice_status = security_utils.check_voice_presence(duration=3)
-
-    # 3. Trigger Fake Lockdown (Unlock password: niyal)
-    fake_update.start_fake_update()
+if face_ok:
+    # CASE 1: Face match ho gaya
+    print("✅ Welcome back, Sir. Access Granted.")
+    speak_temp.Speak("Welcome back Sir. Access granted.")
     
-    # Blue screen hatne ke baad bhi system access nahi dega
-    print("System Lockdown Active. Goodbye.")
+    # Jarvis Loop Start
+    threading.Thread(target=jarvis_loop, daemon=True).start()
+    while True:
+        time.sleep(1)
+
+else:
+    # CASE 2: Face fail — Voice se try karo
+    print("❌ Face not recognized. Trying voice verification...")
+    speak_temp.Speak("Face not recognized. Please verify your voice sir.")
+
+    from voice_auth import verify_voice
+    # Voice verification engine call
+    voice_ok, msg = verify_voice(speaker=speak_temp)
+
+    if voice_ok:
+        # CASE 2A: Voice match ho gaya
+        print("✅ Voice Verified. Welcome back Sir. Access Granted.")
+        speak_temp.Speak("Voice verified. Welcome back Sir. Access granted.")
+        
+        threading.Thread(target=jarvis_loop, daemon=True).start()
+        while True:
+            time.sleep(1)
+
+    else:
+        # CASE 3: DONO FAIL — INTRUDER DETECTED!
+        print("\n🚨 [ALERT] Unauthorized Access Detected!")
+        print("Initializing System Core... Please wait.")
+        speak_temp.Speak("Access denied. Intruder detected. Locking system.")
+
+        # 1. SILENT PHOTO CAPTURE (Ab yahan capture karega jab dono fail ho gaye)
+        # Fast capture using CAP_DSHOW
+        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+        ret, intruder_frame = cap.read()
+        if ret:
+            security_utils.capture_intruder(intruder_frame) # Logs mein save hoga
+        cap.release()
+
+        # 2. Acoustic Check (Optional logging of background noise)
+        voice_status = security_utils.check_voice_presence(duration=3)
+
+        # 3. FAKE LOCKDOWN (Full Screen Update)
+        # Make sure fake_update.py uses root.attributes('-fullscreen', True)
+        fake_update.start_fake_update()
+
+        print("System Lockdown Active. Goodbye.")

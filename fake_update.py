@@ -3,6 +3,7 @@ import tkinter as tk
 def start_fake_update():
     root = tk.Tk()
     root.attributes('-fullscreen', True)
+    root.attributes('-topmost', True)
     root.configure(background='#0078d7')
     root.config(cursor="none")
 
