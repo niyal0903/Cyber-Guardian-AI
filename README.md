@@ -1,171 +1,185 @@
-# 🛡️ Cyber Guardian AI: Mark II 
-> **An Advanced Voice-Controlled Cybersecurity Assistant with AI Biometric Defense**
+# 🛡️ Cyber Guardian AI — Mark IV
+> **AI-Powered Voice-Controlled Cybersecurity Assistant with Biometric Defense**
 
-Cyber Guardian AI is a next-generation security system that doesn't just detect threats—it traps intruders using **AI Deception**. Inspired by Tony Stark’s JARVIS, it provides a fully voice-controlled interface for real-time security analysis.
+Cyber Guardian AI ek next-generation personal security system hai jo sirf threats detect nahi karta — balki **real-time mein respond** bhi karta hai. Tony Stark ke JARVIS se inspired, yeh system aapke WiFi network ka 24/7 guardian hai.
 
 ---
 
-## ⚡ What's New in Mark II?
-* **🔐 AI Biometric Face Auth:** Uses the DeepFace engine for owner recognition. Jarvis only grants access if your face is verified.
-* **🎭 Intruder Deception System:** After 2 failed attempts, the system triggers a "Fake Windows Update" (Blue Screen) to confuse the intruder.
-* **📸 Silent Photo Capture:** Automatically saves the intruder's photo in the `Intruder_Logs` folder without any notification.
-* **🎙️ Acoustic Fingerprint:** Monitors the room for physical presence using sound signatures.
-* **🎹 Secret Unlock Key:** To bypass the deception screen, you must type the secret sequence: `niyal`.
+## 🆕 Mark IV — What's New?
+
+| Feature | Description |
+|:---|:---|
+| 🎙️ Voice Authentication | MFCC-based voice biometric — 40 coefficients + Delta features |
+| 🤖 ML Anomaly Detection | Isolation Forest model — normal vs abnormal traffic sikhta hai |
+| 👥 Evil Twin Detector | Fake WiFi access points detect karta hai |
+| 🗺️ Live Attack Map | Folium se real-time attacker locations map pe |
+| 🔐 Dual Biometric Gate | Face + Voice — dono fail ho tab intruder system |
 
 ---
 
 ## 🚀 Core Features
 
-### 🎤 Voice Controlled Assistant
-Speak directly to Jarvis to execute complex security tasks:
-* `"scan network"` → Scans WiFi devices + Brand detection + Risk analysis.
-* `"attack map"` → Opens a live browser map showing DDoS attacker locations.
-* `"start deauth monitor"` → Watches for WiFi deauthentication (kick-off) attacks.
-* `"check mac spoofing"` → Instantly detects if a device is faking its identity.
-* `"internet speed"` → Runs a real-time download and upload speed test.
+### 🎤 Voice Controlled Interface
+Jarvis se seedha baat karo — commands voice se execute hoti hain:
+
+| Command | Action |
+|:---|:---|
+| `"scan network"` | WiFi devices scan — brand detection + risk analysis |
+| `"attack map"` | Live browser map — DDoS attacker locations |
+| `"start evil twin"` | Fake AP detector start |
+| `"start anomaly"` | ML-based traffic anomaly detection (5 min learning) |
+| `"start deauth monitor"` | WiFi deauthentication attack monitor |
+| `"check mac spoofing"` | MAC address spoofing detection |
+| `"check email"` | Dark web email breach check |
+| `"check password"` | Password strength + breach check |
+| `"internet speed"` | Real-time download/upload speed test |
+| `"my ip"` | Local + public IP, location, ISP info |
+| `"anomaly report"` | ML detection report |
+| `"evil twin report"` | Evil Twin detection report |
+
+### 🔐 Biometric Authentication System
+
+```
+Jarvis Start
+    ↓
+Face Recognition (DeepFace)
+    ↓ Pass → Access Granted ✓
+    ↓ Fail ↓
+Voice Recognition (MFCC 40-dim)
+    ↓ Pass → Access Granted ✓
+    ↓ Fail ↓
+INTRUDER DETECTED
+    → Silent photo capture
+    → Acoustic fingerprint
+    → Fake Windows Update lockdown
+```
+
+### 🤖 ML Anomaly Detection Engine
+- **Phase 1 — Learning (5 min):** Normal traffic pattern seekhta hai
+- **Phase 2 — Detection (Live):** Isolation Forest model se anomaly score
+- **Attack Types Detected:** Port scan, DDoS, ICMP flood, SYN flood, Mass targeting
+
+### 🕵️ Evil Twin AP Detector
+- Same SSID ke multiple BSSIDs detect karta hai
+- Man-in-the-Middle attack prevention
+- Windows `netsh` fallback — monitor mode required nahi
 
 ### 📊 Live Iron Man Dashboard
-* **Animated UI:** The Jarvis jaw moves in sync with the voice output.
-* **Live Metrics:** Real-time tracking of CPU, RAM, and Network Traffic waves.
-* **Threat Alerts:** The entire dashboard UI turns **RED** when a high-level threat is detected.
+- Animated Jarvis jaw — voice sync ke saath
+- Real-time CPU, RAM, Network metrics
+- Threat alert — dashboard RED ho jaata hai
+- Live command display
 
-### 🛡️ Defensive Modules
-* **DDoS Tracker:** Monitors high-traffic packets and can auto-block malicious IPs.
-* **Dark Web Checker:** Scans leaked databases to see if your Email or Password has been breached.
+### 🛡️ Security Modules
+- **DDoS Tracker** — High traffic detect + attacker IP location
+- **ARP Spoofing Detector** — MAC-IP mismatch real-time alert
+- **MAC Spoof Detector** — Device identity verification
+- **WiFi Deauth Monitor** — Kick-off attack detection
+- **Password Checker** — Strength analysis + HaveIBeenPwned
+- **Email Breach Checker** — Dark web database scan
+- **IP Auto Blocker** — Windows Firewall integration
+- **Port Scanner** — Fast parallel scan (100 threads)
 
 ---
 
 ## 🛠️ Tech Stack
+
 | Category | Technologies |
-| :--- | :--- |
-| **Language** | Python 3.10+ |
-| **AI/ML** | DeepFace, TensorFlow, Keras |
-| **Networking** | Scapy, Socket, Requests |
-| **Visualization** | Folium, NetworkX, Matplotlib |
-| **Voice/Audio** | SAPI5 (Win32Com), SpeechRecognition, SoundDevice |
-| **GUI** | Tkinter (Iron Man Theme) |
+|:---|:---|
+| Language | Python 3.10+ |
+| AI / ML | DeepFace, TensorFlow, Keras, Isolation Forest |
+| Voice Auth | librosa, MFCC, scipy, sounddevice |
+| Networking | Scapy, Socket, Requests |
+| Visualization | Folium, NetworkX, Matplotlib |
+| Voice / Audio | SAPI5 (Win32Com), SpeechRecognition |
+| GUI | Tkinter (Iron Man Theme) |
+| Geolocation | ip-api.com, Google Maps |
 
 ---
 
 ## 📂 Project Structure
-```text
-Cyber-Guardian-AI/
-├── cyberjarvis.py          ← Main Hub (Jarvis Logic & Voice)
-├── face_auth.py            ← Biometric Recognition Engine
-├── security_utils.py       ← Silent Photo & Acoustic Defense
-├── fake_update.py          ← Deception Screen (Unlock: niyal)
-├── Dashboard.py            ← Iron Man Live GUI Dashboard
-├── ddos_trecker.py         ← DDoS Monitoring & Attack Reports
-└── requirements.txt        ← Project Dependencies
-⚙️ Installation & Setup
-Clone the Repo:
 
-Bash
+```
+Cyber-Guardian-AI/
+├── cyberjarvis.py           ← Main Hub — Voice loop & command routing
+├── face_auth.py             ← Biometric face recognition engine
+├── voice_auth.py            ← MFCC voice authentication (40-dim)
+├── enroll_voice.py          ← Voice enrollment script
+├── extract_feature.py       ← Feature extraction from wav
+├── evil_twin_detector.py    ← WiFi Evil Twin AP detector
+├── ml_anomaly_detector.py   ← Isolation Forest traffic analyzer
+├── security_utils.py        ← Silent photo + acoustic detection
+├── fake_update.py           ← Intruder deception screen
+├── Dashboard.py             ← Iron Man live GUI dashboard
+├── ddos_trecker.py          ← DDoS monitoring + attack map
+├── mac_spoof_detector.py    ← MAC spoofing detection
+├── wifi_deauth_detector.py  ← Deauth attack monitor
+├── password_checker.py      ← Password strength + breach check
+├── email_breach.py          ← Dark web email checker
+├── cyberai.py               ← AI response engine
+├── master_voice.wav         ← Owner voice sample
+├── master_voice_feat.npy    ← Voice biometric fingerprint
+└── requirements.txt         ← All dependencies
+```
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1. Clone the Repository
+```bash
 git clone https://github.com/niyal0903/Cyber-Guardian-AI.git
 cd Cyber-Guardian-AI
-Install Dependencies:
+```
 
-Bash
+### 2. Install Dependencies
+```bash
 pip install -r requirements.txt
 pip install deepface tf-keras opencv-python sounddevice scipy
-Setup Your Face:
-Apni ek clear photo my_face.jpg naam se main folder mein rakhein.
+pip install librosa scikit-learn folium speedtest-cli
+pip install colorama scapy psutil networkx
+```
 
-Run as Admin:
+### 3. Setup Face Authentication
+Apni ek clear photo `my_face.jpg` naam se main folder mein rakho.
 
-Bash
+### 4. Setup Voice Authentication
+```bash
+python enroll_voice.py
+```
+3 baar clearly bolo: **"Jarvis activate secure mode"**
+
+### 5. Run as Administrator
+```bash
 python cyberjarvis.py
-🕵️ How to Unlock the Deception Screen?
-Agar aapka face recognize nahi hota aur Blue Update Screen aa jati hai, toh ghabraiye mat.
-Bas keyboard par bina kisi box ke type karein: niyal
-System turant unlock ho jayega!
-
-Gemini said
-Zaroor Sir! Ek professional GitHub README hamesha ek clean structure mein hota hai. Maine ise niche ek code block mein de diya hai taaki aap ise directly copy karke apni README.md file mein paste kar sakein.
-
-Isme maine aapke naye Mark II (Face Auth + Deception) features ko highlight kar diya hai.
-
-Markdown
-# 🛡️ Cyber Guardian AI: Mark II 
-> **An Advanced Voice-Controlled Cybersecurity Assistant with AI Biometric Defense**
-
-Cyber Guardian AI is a next-generation security system that doesn't just detect threats—it traps intruders using **AI Deception**. Inspired by Tony Stark’s JARVIS, it provides a fully voice-controlled interface for real-time security analysis.
+```
+> ⚠️ Administrator rights zaroori hain — Scapy network scanning ke liye.
 
 ---
 
-## ⚡ What's New in Mark II?
-* **🔐 AI Biometric Face Auth:** Uses the DeepFace engine for owner recognition. Jarvis only grants access if your face is verified.
-* **🎭 Intruder Deception System:** After 2 failed attempts, the system triggers a "Fake Windows Update" (Blue Screen) to confuse the intruder.
-* **📸 Silent Photo Capture:** Automatically saves the intruder's photo in the `Intruder_Logs` folder without any notification.
-* **🎙️ Acoustic Fingerprint:** Monitors the room for physical presence using sound signatures.
-* **🎹 Secret Unlock Key:** To bypass the deception screen, you must type the secret sequence: `niyal`.
+## 🕵️ Intruder Deception System
+
+Agar face aur voice dono fail ho jaayein:
+1. **Silent Photo** — Camera se intruder ki photo capture hoti hai
+2. **Acoustic Check** — Room presence detect hota hai  
+3. **Fake Windows Update** — Full-screen deception screen activate hoti hai
+
+> 🔑 Secret unlock key: `niyal`
 
 ---
 
-## 🚀 Core Features
+## ⚠️ Legal Disclaimer
 
-### 🎤 Voice Controlled Assistant
-Speak directly to Jarvis to execute complex security tasks:
-* `"scan network"` → Scans WiFi devices + Brand detection + Risk analysis.
-* `"attack map"` → Opens a live browser map showing DDoS attacker locations.
-* `"start deauth monitor"` → Watches for WiFi deauthentication (kick-off) attacks.
-* `"check mac spoofing"` → Instantly detects if a device is faking its identity.
-* `"internet speed"` → Runs a real-time download and upload speed test.
-
-### 📊 Live Iron Man Dashboard
-* **Animated UI:** The Jarvis jaw moves in sync with the voice output.
-* **Live Metrics:** Real-time tracking of CPU, RAM, and Network Traffic waves.
-* **Threat Alerts:** The entire dashboard UI turns **RED** when a high-level threat is detected.
-
-### 🛡️ Defensive Modules
-* **DDoS Tracker:** Monitors high-traffic packets and can auto-block malicious IPs.
-* **Dark Web Checker:** Scans leaked databases to see if your Email or Password has been breached.
+Yeh tool **sirf educational aur personal network defense** ke liye banaya gaya hai. Apne khud ke network aur devices pe use karein. Kisi aur ke network pe unauthorized use **illegal hai** aur IT Act 2000 ke under punishable hai.
 
 ---
 
-## 🛠️ Tech Stack
-| Category | Technologies |
-| :--- | :--- |
-| **Language** | Python 3.10+ |
-| **AI/ML** | DeepFace, TensorFlow, Keras |
-| **Networking** | Scapy, Socket, Requests |
-| **Visualization** | Folium, NetworkX, Matplotlib |
-| **Voice/Audio** | SAPI5 (Win32Com), SpeechRecognition, SoundDevice |
-| **GUI** | Tkinter (Iron Man Theme) |
+## 👨‍💻 Author
+
+**Niyal Patel**  
+Cybersecurity & AI Developer  
+GitHub: [@niyal0903](https://github.com/niyal0903)
 
 ---
 
-## 📂 Project Structure
-```text
-Cyber-Guardian-AI/
-├── cyberjarvis.py          ← Main Hub (Jarvis Logic & Voice)
-├── face_auth.py            ← Biometric Recognition Engine
-├── security_utils.py       ← Silent Photo & Acoustic Defense
-├── fake_update.py          ← Deception Screen (Unlock: niyal)
-├── Dashboard.py            ← Iron Man Live GUI Dashboard
-├── ddos_trecker.py         ← DDoS Monitoring & Attack Reports
-└── requirements.txt        ← Project Dependencies
-⚙️ Installation & Deployment
-Clone the Fortress:
-
-Bash
-git clone [https://github.com/niyal0903/Cyber-Guardian-AI.git](https://github.com/niyal0903/Cyber-Guardian-AI.git)
-cd Cyber-Guardian-AI
-Install Power-ups:
-
-Bash
-pip install -r requirements.txt
-pip install deepface tf-keras opencv-python sounddevice scipy
-Initialize Jarvis:
-Place your clear photo as my_face.jpg in the root directory.
-
-Bash
-python cyberjarvis.py
-👨‍💻 Author
-Niyal Patel 🚀
-Cybersecurity & AI Developer
-
-⚠️ Legal Disclaimer
-Yeh tool sirf educational aur personal network defense ke liye hai. Unauthorized hacking illegal hai.
-
-*"Sometimes you gotta run before you can walk." — Tony Stark*
+ *"Sometimes you gotta run before you can walk." — Tony Stark*
