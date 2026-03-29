@@ -1069,6 +1069,7 @@ import fake_update
 import cv2
 from voice_auth import verify_voice
 import time
+from network_heatmap import show_network_heatmap
 
 # ── Fast startup: MAC vendor DB load background mein ──
 try:
@@ -1580,6 +1581,16 @@ def jarvis_loop():
                         speak(f"New device detected {name}")
                 previous_devices = current_devices
                 network_map(devices)
+            elif "heatmap" in command or "network map" in command:
+                if last_devices:
+                    speak("Opening animated network heatmap sir")
+                    threading.Thread(
+                        target=show_network_heatmap,
+                        args=(last_devices,),
+                        daemon=True
+                    ).start()
+                else:
+                    speak("Sir please scan network first then show heatmap")
 
             elif "attack map" in command:
                 speak("Opening live attack map sir")
